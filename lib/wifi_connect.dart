@@ -12,9 +12,7 @@ import 'src/dialogs.dart';
 export 'src/exceptions.dart';
 export 'src/wifi_scanner_mixin.dart';
 
-enum SecurityType {
-  wpa, wep, open, auto
-}
+enum SecurityType { wpa, wep, open, auto }
 
 String getCapabilities(SecurityType securityType) {
   String ret = "";
@@ -57,7 +55,7 @@ class WifiConnect {
     WifiConnectDialogs dialogs,
     Duration timeout: const Duration(seconds: 15),
   }) async {
-    assert (!hidden || securityType != SecurityType.auto);
+    assert(!hidden || securityType != SecurityType.auto);
 
     var timeLimit = DateTime.now().add(timeout);
 
@@ -102,17 +100,17 @@ class WifiConnect {
     if (!Platform.isAndroid) return;
 
     dialogs ??= WifiConnectDialogs();
-    var locationStatus = await UseLocation.useLocation(
+    /* var locationStatus = await UseLocation.useLocation(
       context,
       showPermissionRationale: dialogs.locationPermission,
       showPermissionSettingsRationale: dialogs.locationPermissionSettings,
       showEnableSettingsRationale: dialogs.enableLocationSettings,
-    );
+    ); */
 
-    if (locationStatus != UseLocationStatus.ok) {
+    /* if (locationStatus != UseLocationStatus.ok) {
       throw WifiConnectException(
         WifiConnectStatus.values[locationStatus.index + 3],
       );
-    }
+    } */
   }
 }

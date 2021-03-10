@@ -69,8 +69,8 @@ class _MyAppState extends State<MyApp> with WifiScannerMixin<MyApp> {
 
   String connectSuccess;
   var hidden = false;
-  var ssidControl = TextEditingController(text: 'Gecko1234');
-  var passwordControl = TextEditingController(text: 'password');
+  var ssidControl = TextEditingController(text: 'yanqingiPhone');
+  var passwordControl = TextEditingController(text: '2017171819');
 
   @override
   void initState() {
