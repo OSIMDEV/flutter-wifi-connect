@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
-import 'package:wifi_connect/wifi_connect.dart';
 import 'package:location/location.dart';
-
-import 'dialogs.dart';
+import 'package:wifi_connect/wifi_connect.dart';
 
 mixin WifiScannerMixin<T extends StatefulWidget> implements State<T> {
   var connectedSSID = '';
@@ -13,12 +11,11 @@ mixin WifiScannerMixin<T extends StatefulWidget> implements State<T> {
 
   Future<void> startWifiScanner({
     Duration period: const Duration(seconds: 1),
-    WifiConnectDialogs dialogs,
+    // WifiConnectDialogs dialogs,
   }) async {
-    if (Platform.isAndroid) {
-      WifiConnect.useLocation(context, dialogs: dialogs);
-    }
-
+    // if (Platform.isAndroid) {
+    //   WifiConnect.useLocation(context, dialogs: dialogs);
+    // }
 
     if (Platform.isIOS) {
       //Location permission is required to fetch wifi ssid on IOS 13 and above

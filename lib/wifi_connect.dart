@@ -3,11 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:plugin_scaffold/plugin_scaffold.dart';
-import 'package:use_location/use_location.dart';
 import 'package:wifi_connect/src/exceptions.dart';
-
-import 'src/dialogs.dart';
+import 'package:wifi_connect/src/plugin_scaffold.dart';
 
 export 'src/exceptions.dart';
 export 'src/wifi_scanner_mixin.dart';
@@ -38,29 +35,24 @@ class WifiConnect {
   /// Get the currently connected WiFi AP's SSID
   ///
   /// Returns empty string [''] if device is not connected to any WiFi AP.
-  static Future<String> getConnectedSSID(
-    BuildContext context, {
-    WifiConnectDialogs dialogs,
-  }) async {
-    await useLocation(context, dialogs: dialogs);
+  static Future<String?> getConnectedSSID(BuildContext context) async {
+    await useLocation(context);
     return await channel.invokeMethod('getConnectedSSID');
   }
 
   static Future<void> connect(
     BuildContext context, {
-    @required String ssid,
-    @required String password,
+    required String ssid,
+    required String password,
     bool hidden = false,
     SecurityType securityType = SecurityType.auto,
-    WifiConnectDialogs dialogs,
     Duration timeout: const Duration(seconds: 15),
   }) async {
     assert(!hidden || securityType != SecurityType.auto);
 
     var timeLimit = DateTime.now().add(timeout);
 
-    dialogs ??= WifiConnectDialogs();
-    await useLocation(context, dialogs: dialogs);
+    await useLocation(context);
 
     var args = {
       'ssid': ssid ?? '',
@@ -71,19 +63,12 @@ class WifiConnect {
     };
     var idx = await channel.invokeMethod("connect", args);
 
-    if (idx == WifiConnectStatus.wifiEnableDenied.index) {
-      var proceed = await dialogs.enableWifiSettings(context);
-      if (proceed) {
-        idx = await channel.invokeMethod('openWifiSettings', args);
-      }
-    }
-
     if (idx != WifiConnectStatus.ok.index) {
       throw WifiConnectException(WifiConnectStatus.values[idx]);
     }
   }
 
-  static Stream<String> getConnectedSSIDListener({
+  static Stream<String?> getConnectedSSIDListener({
     Duration period: const Duration(seconds: 1),
   }) {
     return PluginScaffold.createStream(
@@ -94,12 +79,11 @@ class WifiConnect {
   }
 
   static Future<void> useLocation(
-    BuildContext context, {
-    WifiConnectDialogs dialogs,
-  }) async {
+    BuildContext context,
+  ) async {
     if (!Platform.isAndroid) return;
 
-    dialogs ??= WifiConnectDialogs();
+    // dialogs ??= WifiConnectDialogs();
     /* var locationStatus = await UseLocation.useLocation(
       context,
       showPermissionRationale: dialogs.locationPermission,
